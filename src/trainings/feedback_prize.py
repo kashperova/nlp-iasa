@@ -126,7 +126,7 @@ def get_pred_string(
 
     l2id = {v: k for k, v in id2label.items()}
     get_class = (
-        lambda x: id2label[x][2:] if x != 14 else "Other"
+        lambda x: id2label[x][2:] if x != 14 or x != "14" else "Other"
     )  # remove B-, I-
 
     entities = []
