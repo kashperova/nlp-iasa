@@ -216,7 +216,7 @@ def run_inference(
     model = AutoModelForTokenClassification.from_pretrained(
         checkpoint_path, num_labels=len(id2label) - 1
     )
-    device = torch.device("cuda" if torch.cuda.is_available() else "mps")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     model.eval()
 

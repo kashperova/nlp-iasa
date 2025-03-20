@@ -93,7 +93,7 @@ def tokenize_and_align_labels(
 
 def beam_search(trainer: Trainer, model: PreTrainedModel, dataset, beam_size: int):
     preds = []
-    device = torch.device("cuda" if torch.cuda.is_available() else "mps")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     for batch in trainer.get_eval_dataloader(dataset):
         batch = {
