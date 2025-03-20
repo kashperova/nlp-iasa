@@ -1,0 +1,33 @@
+dataset:
+  csv_path: /content/drive/MyDrive/feedback-prize-dataset/train.csv
+  txt_path: /content/drive/MyDrive/feedback-prize-dataset/train/train
+  test_size: 0.2
+  max_length: 2048
+  stride: 0
+
+model:
+  checkpoint_path: answerdotai/ModernBERT-base
+  tokenizer_path: answerdotai/ModernBERT-base
+  freeze_emb: False
+  freeze_attn: []
+
+trainer:
+  seed: 42
+  name: modern-bert
+  hf_args:
+    _target_: transformers.TrainingArguments
+    report_to: "wandb"
+    output_dir: /content/drive/MyDrive/nlp-iasa/modern-bert-ner
+    eval_strategy: "epoch"
+    log_strategy: "epoch"
+    save_strategy: "epoch"
+    n_epochs: 5
+    train_batch_size: 4
+    eval_batch_size: 4
+    grad_acc_steps: 8
+    lr: 5e-5
+    weight_decay: 0.01
+    warmup_ratio: 0.1
+  save_final_path: /content/drive/MyDrive/nlp-iasa/modern-bert-ner-final
+  auto_max_length: True
+  end_token: False
