@@ -20,7 +20,7 @@ def get_tags(entities: list[str], end_tag: bool = False) -> dict[str, int]:
         if end_tag:
             tags[f"E-{entity}"] = i + len(entities) + len(entities)
 
-    tags["O"] = len(entities) * 2 if end_tag else len(entities) * 3
+    tags["O"] = len(entities) * 3 if end_tag else len(entities) * 2
     tags["Special"] = -100
 
     return tags
@@ -93,7 +93,7 @@ def tokenize_and_align_labels(
 
 def beam_search(trainer: Trainer, model: PreTrainedModel, dataset, beam_size: int):
     preds = []
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "mps")
 
     for batch in trainer.get_eval_dataloader(dataset):
         batch = {

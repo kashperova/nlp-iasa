@@ -125,17 +125,10 @@ def get_pred_string(
     n_tokens = len(example["input_ids"])
 
     l2id = {v: k for k, v in id2label.items()}
-    print(f"{id2label.keys()}")
-    def get_class(x):
-        print(f"X: {x}, Type: {type(x)}")
-        if x != 14 and x != "14":
-           return id2label[x][2:]
-        else:
-            return "Other"
 
-    # get_class = (
-    #     lambda x: id2label[x][2:] if x != 14 and x != "14" else "Other"
-    # )  # remove B-, I-
+    get_class = (
+        lambda x: id2label[x][2:] if x not in [l2id["O"], str(l2id["O"])] else "Other"
+    )  # remove B-, I-
 
     entities = []
     all_span = []
@@ -146,7 +139,6 @@ def get_pred_string(
             break
         if i == 0:
             cur_span = example["offset_mapping"][i]
-            print(f"C: {c}, {type(c)}", flush=True)
             entities.append(get_class(c))
 
         elif i > 0 and (c == pred[i - 1] or (c - 7) == pred[i - 1]):  # beginning
@@ -168,7 +160,9 @@ def get_pred_string(
         before = text[:span_start]
 
         word_start = len(before.split())
-        if before[-1] != " ":
+        if len(before) == 0:
+            word_start = 0
+        elif before[-1] != " ":
             word_start -= 1
 
         num_words = len(text[span_start : span_end + 1].split())
@@ -222,7 +216,7 @@ def run_inference(
     model = AutoModelForTokenClassification.from_pretrained(
         checkpoint_path, num_labels=len(id2label) - 1
     )
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "mps")
     model.to(device)
     model.eval()
 
@@ -250,10 +244,10 @@ def run_inference(
             id2label,
             num_entities=len(entities),
         )
-        df["len"] = df["discourse"].apply(lambda t: len(t.split()))
+        df["discourse_len"] = df["discourse"].apply(lambda t: len(t.split()))
 
         # remove very short discourses (likely false positives)
-        df = df[df.length > min_tokens].reset_index(drop=True)
+        df = df[df.discourse_len > min_tokens].reset_index(drop=True)
 
         submission_data.append(df)
 
