@@ -125,9 +125,17 @@ def get_pred_string(
     n_tokens = len(example["input_ids"])
 
     l2id = {v: k for k, v in id2label.items()}
-    get_class = (
-        lambda x: id2label[x][2:] if x != 14 and x != "14" else "Other"
-    )  # remove B-, I-
+    print(f"{id2label.keys()}")
+    def get_class(x):
+        print(f"X: {x}, Type: {type(x)}")
+        if x != 14 and x != "14":
+           return id2label[x][2:]
+        else:
+            return "Other"
+
+    # get_class = (
+    #     lambda x: id2label[x][2:] if x != 14 and x != "14" else "Other"
+    # )  # remove B-, I-
 
     entities = []
     all_span = []
