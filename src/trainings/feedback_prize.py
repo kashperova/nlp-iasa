@@ -146,11 +146,10 @@ def get_pred_string(
             break
         if i == 0:
             cur_span = example["offset_mapping"][i]
+            print(f"C: {c}, {type(c)}", flush=True)
             entities.append(get_class(c))
 
-        elif i > 0 and (
-            c == pred[i - 1] or (c - num_entities) == pred[i - 1]
-        ):  # beginning
+        elif i > 0 and (c == pred[i - 1] or (c - 7) == pred[i - 1]):  # beginning
             cur_span[1] = example["offset_mapping"][i][1]
 
         else:
